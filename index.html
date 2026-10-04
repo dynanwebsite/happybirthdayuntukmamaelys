@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Selamat Ulang Tahun Mama</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ffb6c1, #ff69b4, #ff1493, #ff6b9d);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            position: relative;
+            padding: 20px;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Balon & Bunga Jatuh */
+        .falling-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .falling-item {
+            position: absolute;
+            top: -10%;
+            font-size: 28px;
+            animation: fallDown linear infinite;
+            user-select: none;
+            opacity: 0.7;
+        }
+
+        @keyframes fallDown {
+            0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.8; }
+            100% { transform: translateY(110vh) rotate(720deg) scale(0.3); opacity: 0; }
+        }
+
+        /* Slide Container */
+        .slide {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            z-index: 1;
+        }
+
+        .slide.active {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* Kartu */
+        .card {
+            background: linear-gradient(160deg, #fff5f8, #ffe4ec);
+            padding: 40px 35px 35px;
+            border-radius: 20px;
+            box-shadow:
+                0 25px 60px rgba(0,0,0,0.4),
+                0 0 0 4px #ffd700 inset,
+                0 0 0 8px #ffb6c1 inset;
+            text-align: center;
+            position: relative;
+            width: 100%;
+            animation: floatIn 1.2s ease forwards;
+        }
+
+        @keyframes floatIn {
+            0% { opacity: 0; transform: scale(0.7) translateY(40px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 14px; left: 14px; right: 14px; bottom: 14px;
+            border: 1.5px dashed rgba(255, 105, 180, 0.3);
+            border-radius: 12px;
+            pointer-events: none;
+        }
+
+        .ornament {
+            color: #d4a373;
+            letter-spacing: 10px;
+            font-size: 1.1rem;
+            opacity: 0.6;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .card h1 {
+            font-size: 2.3rem;
+            color: #c71585;
+            text-shadow: 2px 2px 8px rgba(255, 182, 193, 0.6);
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .card .nama {
+            font-size: 2rem;
+            color: #ff1493;
+            font-weight: bold;
+            margin: 15px 0;
+            letter-spacing: 4px;
+            text-shadow: 1px 1px 6px rgba(255, 20, 147, 0.3);
+        }
+
+        .card .dari {
+            font-size: 1rem;
+            color: #8b4513;
+            font-style: italic;
+            margin-top: 20px;
+            letter-spacing: 2px;
+        }
+
+        .card .cake {
+            font-size: 4rem;
+            display: block;
+            margin: 10px 0;
+            animation: cakeBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes cakeBounce {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.1) rotate(-5deg); }
+            75% { transform: scale(1.1) rotate(5deg); }
+        }
+
+        /* Galeri */
+        .galeri {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+            width: 100%;
+        }
+
+        .foto-box {
+            background: #fff;
+            padding: 6px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: 2px solid #ffd700;
+            overflow: hidden;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .foto-box:hover { transform: scale(1.05) rotate(2deg); }
+
+        .foto-box img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .foto-placeholder {
+            font-size: 2.5rem;
+            color: #ffb6c1;
+        }
+
+        .pesan {
+            color: #8b4513;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            font-style: italic;
+            margin: 15px 0;
+            padding: 0 5px;
+            text-align: center;
+        }
+
+        /* Doa */
+        .doa {
+            color: #8b4513;
+            font-size: 1rem;
+            line-height: 2;
+            font-style: italic;
+            margin: 15px 0;
+            padding: 0 10px;
+        }
+
+        .doa strong {
+            color: #c71585;
+            font-style: normal;
+        }
+
+        .hati {
+            font-size: 3rem;
+            display: block;
+            margin: 15px 0;
+            animation: heartBeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            30% { transform: scale(1.2); }
+            50% { transform: scale(1); }
+            70% { transform: scale(1.15); }
+        }
+
+        .ttd {
+            font-size: 1.1rem;
+            color: #ff1493;
+            font-weight: bold;
+            letter-spacing: 3px;
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 105, 180, 0.3);
+            padding-top: 15px;
+        }
+
+        /* Tombol Navigasi */
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 5px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-nav {
+            padding: 13px 35px;
+            background: linear-gradient(145deg, #ffd700, #ffb347);
+            color: #8b4513;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            border: 2px solid #fff;
+            letter-spacing: 2px;
+            font-family: 'Georgia', serif;
+            cursor: pointer;
+        }
+
+        .btn-nav:hover {
+            transform: scale(1.08);
+            background: linear-gradient(145deg, #ffea70, #ffd700);
+            box-shadow: 0 12px 36px rgba(0,0,0,0.4);
+        }
+
+        .btn-nav:active { transform: scale(0.95); }
+
+        .btn-nav.prev::before { content: '◀ '; }
+        .btn-nav.next::after { content: ' ▶'; }
+
+        /* Indikator Slide */
+        .indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: #fff;
+            transform: scale(1.3);
+            box-shadow: 0 0 10px rgba(255,255,255,0.8);
+        }
+
+        /* Hint Swipe */
+        .swipe-hint {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.8);
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            animation: hintPulse 2s ease-in-out infinite;
+            z-index: 10;
+            text-align: center;
+        }
+
+        @keyframes hintPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.9; }
+        }
+
+        /* Responsive */
+        @media (max-width: 550px) {
+            .card { padding: 28px 20px 25px; }
+            .card h1 { font-size: 1.7rem; }
+            .card .nama { font-size: 1.5rem; }
+            .card .cake { font-size: 3rem; }
+            .pesan { font-size: 0.82rem; }
+            .doa { font-size: 0.85rem; }
+            .btn-nav { padding: 10px 24px; font-size: 0.85rem; }
+            .galeri { gap: 6px; }
+        }
+
+        @media (max-width: 400px) {
+            .card h1 { font-size: 1.4rem; }
+            .card .nama { font-size: 1.3rem; }
+            .foto-placeholder { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Balon & Bunga Jatuh -->
+    <div class="falling-container" id="fallingContainer"></div>
+
+    <!-- Hint Swipe -->
+    <div class="swipe-hint" id="swipeHint">✨ GESER KE ATAS / BAWAH ✨</div>
+
+    <!-- ==================== SLIDE 1 ==================== -->
+    <div class="slide active" id="slide1">
+        <div class="card">
+            <span class="ornament">✦ ✦ ✦</span>
+            <span class="cake">🎂</span>
+            <h1>Selamat Ulang Tahun</h1>
+            <div class="nama">Mama</div>
+            <span class="ornament">✦ ✦ ✦</span>
+            <p class="pesan" style="margin-top: 20px;">
+                "Hari ini hari spesial,<br>
+                karena hari ini mama ulang tahun.<br>
+                Makasih udah ada, ma."
+            </p>
+            <div class="dari">– Dari Elys –</div>
+        </div>
+        <div class="nav-buttons">
+            <button class="btn-nav next" onclick="goToSlide('slide2')">Lanjut</button>
+        </div>
+    </div>
+
+    <!-- ==================== SLIDE 2 ==================== -->
+    <div class="slide" id="slide2">
+        <div class="card">
+            <span class="ornament">✦ ✦ ✦</span>
+            <h1 style="font-size: 1.8rem;">Untuk Mama</h1>
+            <span class="ornament" style="margin-top: 5px;">✦ ✦ ✦</span>
+
+            <div class="galeri">
+                <div class="foto-box">
+                    <img src="foto1.jpg" alt="Foto 1" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <span class="foto-placeholder" style="display:none;">🌸</span>
+                </div>
+                <div class="foto-box">
+                    <img src="foto2.jpg" alt="Foto 2" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <span class="foto-placeholder" style="display:none;">🌸</span>
+                </div>
+                <div class="foto-box">
+                    <img src="foto3.jpg" alt="Foto 3" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <span class="foto-placeholder" style="display:none;">🌸</span>
+                </div>
+            </div>
+
+            <p class="pesan">
+                "Makasih ya ma,<br>
+                udah nemenin aku lewat chat,<br>
+                dengerin ceritaku,<br>
+                dan selalu ada walaupun kita jauh.<br><br>
+                Mama adalah tempat aku pulang,<br>
+                walaupun cuma lewat layar."
+            </p>
+
+            <span class="ornament">✦ ✦ ✦</span>
+        </div>
+        <div class="nav-buttons">
+            <button class="btn-nav prev" onclick="goToSlide('slide1')">Kembali</button>
+            <button class="btn-nav next" onclick="goToSlide('slide3')">Lanjut</button>
+        </div>
+    </div>
+
+    <!-- ==================== SLIDE 3 ==================== -->
+    <div class="slide" id="slide3">
+        <div class="card">
+            <span class="ornament">✦ ✦ ✦</span>
+            <span class="hati">❤️</span>
+            <h1 style="font-size: 1.8rem;">Doa Untuk Mama</h1>
+
+            <p class="doa">
+                "Ya Allah,<br>
+                panjangkanlah umur mama,<br>
+                sehatkanlah badannya,<br>
+                bahagiakanlah hatinya.<br><br>
+                <strong>Semoga mama selalu dalam lindungan-Mu.</strong><br>
+                Aamiin Ya Rabbal Alamin."
+            </p>
+
+            <span class="ornament">✦ ✦ ✦</span>
+            <span class="hati">💖</span>
+
+            <div class="ttd">Dari Elys, dengan cinta 💕</div>
+        </div>
+        <div class="nav-buttons">
+            <button class="btn-nav prev" onclick="goToSlide('slide2')">Kembali</button>
+            <button class="btn-nav" onclick="goToSlide('slide1')">🔄 Ulang</button>
+        </div>
+    </div>
+
+    <!-- Indikator Slide -->
+    <div class="indicator">
+        <div class="dot active" data-slide="slide1"></div>
+        <div class="dot" data-slide="slide2"></div>
+        <div class="dot" data-slide="slide3"></div>
+    </div>
+
+    <script>
+        // ===== BALON & BUNGA JATUH =====
+        const container = document.getElementById('fallingContainer');
+        const items = ['🎈', '🎈', '🌸', '🌷', '💖', '✨', '🎉', '🌹', '💐', '🎂', '🩷', '💕'];
+
+        for (let i = 0; i < 50; i++) {
+            const el = document.createElement('div');
+            el.className = 'falling-item';
+            el.textContent = items[Math.floor(Math.random() * items.length)];
+            el.style.left = Math.random() * 100 + '%';
+            el.style.fontSize = (Math.random() * 26 + 14) + 'px';
+            el.style.animationDuration = (Math.random() * 14 + 8) + 's';
+            el.style.animationDelay = (Math.random() * 18) + 's';
+            el.style.opacity = (Math.random() * 0.5 + 0.2);
+            container.appendChild(el);
+        }
+
+        // ===== NAVIGASI SLIDE =====
+        const slides = ['slide1', 'slide2', 'slide3'];
+        let currentIndex = 0;
+
+        function goToSlide(slideId) {
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+            document.getElementById(slideId).classList.add('active');
+            currentIndex = slides.indexOf(slideId);
+            updateDots();
+        }
+
+        function updateDots() {
+            document.querySelectorAll('.dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentIndex);
+            });
+        }
+
+        function nextSlide() {
+            if (currentIndex < slides.length - 1) {
+                goToSlide(slides[currentIndex + 1]);
+            }
+        }
+
+        function prevSlide() {
+            if (currentIndex > 0) {
+                goToSlide(slides[currentIndex - 1]);
+            }
+        }
+
+        // ===== SWIPE GESTURE (ATAS / BAWAH) =====
+        let touchStartY = 0;
+        let touchStartX = 0;
+        let touchStartTime = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+            touchStartX = e.touches[0].clientX;
+            touchStartTime = Date.now();
+        }, { passive: true });
+
+        document.addEventListener('touchend', (e) => {
+            const touchEndY = e.changedTouches[0].clientY;
+            const touchEndX = e.changedTouches[0].clientX;
+            const diffY = touchStartY - touchEndY;
+            const diffX = touchStartX - touchEndX;
+            const duration = Date.now() - touchStartTime;
+
+            // Threshold: minimal 50px, maks 800ms
+            if (duration < 800) {
+                // Geser ke atas → next
+                if (diffY > 50 && Math.abs(diffX) < 100) {
+                    nextSlide();
+                }
+                // Geser ke bawah → prev
+                else if (diffY < -50 && Math.abs(diffX) < 100) {
+                    prevSlide();
+                }
+            }
+        }, { passive: true });
+
+        // ===== SWIPE MOUSE (DESKTOP) =====
+        let mouseStartY = 0;
+        let isMouseDown = false;
+
+        document.addEventListener('mousedown', (e) => {
+            mouseStartY = e.clientY;
+            isMouseDown = true;
+        });
+
+        document.addEventListener('mouseup', (e) => {
+            if (!isMouseDown) return;
+            isMouseDown = false;
+            const diff = mouseStartY - e.clientY;
+            if (diff > 50) nextSlide();
+            else if (diff < -50) prevSlide();
+        });
+
+        // ===== KEYBOARD (ARROW) =====
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowUp' || e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') prevSlide();
+        });
+
+        // ===== SEMBUNYIKAN HINT SETELAH 5 DETIK =====
+        setTimeout(() => {
+            const hint = document.getElementById('swipeHint');
+            if (hint) hint.style.display = 'none';
+        }, 5000);
+    </script>
+
+</body>
+  </html>
