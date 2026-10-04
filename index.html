@@ -317,6 +317,41 @@
             50% { opacity: 0.9; }
         }
 
+        /* Tombol Musik */
+        .music-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            border: 2px solid #fff;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .music-btn:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.1);
+        }
+
+        .music-btn.playing {
+            animation: musicPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes musicPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.7); }
+            50% { box-shadow: 0 0 0 10px rgba(255,255,255,0); }
+        }
+
         /* Responsive */
         @media (max-width: 550px) {
             .card { padding: 28px 20px 25px; }
@@ -336,6 +371,14 @@
     </style>
 </head>
 <body>
+
+    <!-- Lagu -->
+    <audio id="lagu" loop preload="auto">
+        <source src="tiktokio.com1791116319_CGFlZaG2drRvMdDIIwSB.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Tombol Musik -->
+    <button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="Putar/Hentikan Musik">🎵</button>
 
     <!-- Balon & Bunga Jatuh -->
     <div class="falling-container" id="fallingContainer"></div>
@@ -449,6 +492,52 @@
             el.style.opacity = (Math.random() * 0.5 + 0.2);
             container.appendChild(el);
         }
+
+        // ===== LAGU AUTOPLAY =====
+        const lagu = document.getElementById('lagu');
+        const musicBtn = document.getElementById('musicBtn');
+        let laguDiputar = false;
+
+        function cobaPutarLagu() {
+            lagu.play().then(() => {
+                laguDiputar = true;
+                musicBtn.classList.add('playing');
+                musicBtn.textContent = '🎵';
+                console.log('✅ Lagu diputar');
+            }).catch(err => {
+                console.log('⚠️ Autoplay diblokir, nunggu interaksi user');
+                musicBtn.textContent = '🔇';
+
+                const mulaiLagu = () => {
+                    lagu.play().then(() => {
+                        laguDiputar = true;
+                        musicBtn.classList.add('playing');
+                        musicBtn.textContent = '🎵';
+                        console.log('✅ Lagu diputar setelah interaksi');
+                    }).catch(e => console.log('❌ Gagal:', e));
+
+                    document.removeEventListener('click', mulaiLagu);
+                    document.removeEventListener('touchstart', mulaiLagu);
+                };
+
+                document.addEventListener('click', mulaiLagu);
+                document.addEventListener('touchstart', mulaiLagu);
+            });
+        }
+
+        function toggleMusic() {
+            if (lagu.paused) {
+                lagu.play();
+                musicBtn.classList.add('playing');
+                musicBtn.textContent = '🎵';
+            } else {
+                lagu.pause();
+                musicBtn.classList.remove('playing');
+                musicBtn.textContent = '🔇';
+            }
+        }
+
+        cobaPutarLagu();
 
         // ===== NAVIGASI SLIDE =====
         const slides = ['slide1', 'slide2', 'slide3'];
